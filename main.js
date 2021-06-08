@@ -1,6 +1,10 @@
-const n = 15, swapDelay = 100, compareDelay = 100, minSize = 48, maxSize = 256;
+const n = 15, swapDelay = 100, compareDelay = 200, extraDelay = 0, minSize = 48, maxSize = 5.44755 * 48;
 
 const exponentBase = (maxSize / minSize) ** (1 / (n - 1));
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(() => resolve(), ms));
+}
 
 async function bubbleSort(length, compare, swap) {
     let didSwap = true;
@@ -52,18 +56,16 @@ for (let i = 0; i < n; i += 1) {
     rafList.push([numberList[i], img]);
 }
 
-bubbleSort(n, (i, j) => {
+bubbleSort(n, async (i, j) => {
     console.log(`cmp ${i}, ${j}`);
-    return new Promise(resolve => {
-        rafList[i][1].classList.add('comparing');
-        rafList[j][1].classList.add('comparing');
-        setTimeout(() => {
-            rafList[i][1].classList.remove('comparing');
-            rafList[j][1].classList.remove('comparing');
-            resolve(rafList[i][0] - rafList[j][0]);
-        }, compareDelay);
-    });
-}, (i, j) => {
+    rafList[i][1].classList.add('comparing');
+    rafList[j][1].classList.add('comparing');
+    await delay(compareDelay);
+    rafList[i][1].classList.remove('comparing');
+    rafList[j][1].classList.remove('comparing');
+    await delay(extraDelay);
+    return rafList[i][0] - rafList[j][0];
+}, async (i, j) => {
     console.log(`swp ${i}, ${j}`);
     // move around
     const lower = Math.min(i, j), higher = Math.max(i, j);
@@ -72,5 +74,5 @@ bubbleSort(n, (i, j) => {
     pixels += rafList[higher][1].width;
     rafList[lower][1].style.left = `${pixels}px`;
     [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
-    return new Promise(resolve => setTimeout(() => resolve(), swapDelay));
+    await delay(swapDelay + extraDelay);
 }).then(() => console.log(rafList));
