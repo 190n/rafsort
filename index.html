@@ -3,25 +3,54 @@
     <head>
         <meta charset="utf-8">
         <title>rafsort</title>
-        <style>
-            #rafs {
-                position: relative;
-            }
-
-            .raf {
-                position: absolute;
-                bottom: 0;
-                transition: 0s left;
-            }
-
-            .raf.comparing {
-                filter: brightness(200%);
-            }
-        </style>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://cdn.discordapp.com">
+        <script defer type="module" src="main.js"></script>
     </head>
     <body>
-        <div id="rafs">
-        </div>
-        <script src="main.js"></script>
+        <section id="controls">
+            <h1>rafsort</h1>
+            <p>
+                <label for="n-rafs">
+                    Number of Rafs: <span>15</span>
+                    <input id="n-rafs" type="range" min="5" max="50" step="1" value="15">
+                </label>
+                <label for="array-type">
+                    Array type: &square;
+                    <select>
+                        <option value="shuffled" selected>Shuffled</option>
+                        <option value="sorted">Sorted</option>
+                        <option value="reverse">Reverse order</option>
+                    </select>
+                </label>
+            </p>
+            <p>
+                <label for="swap-delay">
+                    Swap delay: <span>100</span>ms
+                    <input id="swap-delay" type="range" min="0" max="500" step="25" value="100">
+                </label>
+                <label for="compare-delay">
+                    Comparison delay: <span>250</span>ms
+                    <input id="compare-delay" type="range" min="0" max="500" step="25" value="250">
+                </label>
+                <label for="extra-delay">
+                    Additional delay: <span>0</span>ms
+                    <input id="extra-delay" type="range" min="0" max="500" step="25" value="0">
+                </label>
+            </p>
+            <p>
+                Sorting algorithm:
+                <select>
+                    <option>Bubble sort</option>
+                    <option>sike you thought!</option>
+                </select>
+            </p>
+            <p>
+                <button id="create">Create Rafs</button>
+                <button id="sort">Sort Rafs</button>
+            </p>
+        </section>
+        <section id="rafs">
+        </section>
     </body>
 </html>

@@ -1,6 +1,20 @@
-const n = 15, swapDelay = 100, compareDelay = 200, extraDelay = 0, minSize = 48, maxSize = 5.44755 * 48;
+import { h, Component, render } from 'https://unpkg.com/preact?module';
+import htm from 'https://unpkg.com/htm?module';
+
+const html = htm.bind(h);
+
+let n = 15, swapDelay = 1000, compareDelay = 1000, extraDelay = 0
+
+const minSize = 32, maxSize = 96;
 
 const exponentBase = (maxSize / minSize) ** (1 / (n - 1));
+
+document.getElementById('n-rafs').onmousemove = function nRafsUpdate(e) {
+    n = parseInt(e.target.value);
+    e.target.previousElementSibling.textContent = e.target.value;
+}
+
+nRafsUpdate({ target: document.getElementById('n-rafs') });
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(() => resolve(), ms));
@@ -38,7 +52,7 @@ const rafUrl = 'https://cdn.discordapp.com/avatars/218965601903706113/9a672cff77
 let widthSoFar = 0, largest = 0;
 
 const rafList = [];
-
+250
 for (let i = 0; i < n; i += 1) {
     const img = new Image;
     img.src = rafUrl;
