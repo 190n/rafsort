@@ -1,5 +1,4 @@
-// https://github.com/preactjs/preact/issues/1961
-import { useState, useRef, useEffect } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import { html, render } from 'https://unpkg.com/htm/preact/index.mjs?module';
 
 import { createRafs, runSort } from './sorting.js';

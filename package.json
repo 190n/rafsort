@@ -1,0 +1,17 @@
+{
+    "name": "rafsort",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "git@github.com:190n/rafsort.git",
+    "author": "Ben Grant <benjamin.j.grant@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "start": "snowpack dev"
+    },
+    "devDependencies": {
+        "snowpack": "^3.5.7"
+    },
+    "dependencies": {
+        "preact": "^10.5.13"
+    }
+}
