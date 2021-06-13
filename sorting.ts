@@ -1,8 +1,13 @@
-function delay(ms) {
+import type { Ref } from 'preact/hooks';
+
+function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
 
-async function bubbleSort(length, compare, swap) {
+type CompareFunction = (i: number, j: number) => Promise<number>;
+type SwapFunction = (i: number, j: number) => Promise<void>;
+
+async function bubbleSort(length: number, compare: CompareFunction, swap: SwapFunction) {
     let didSwap = true;
     while (didSwap) {
         didSwap = false;
@@ -18,7 +23,10 @@ async function bubbleSort(length, compare, swap) {
     }
 }
 
-export function createRafs(container, n, type, swapDelay) {
+export type Raf = [number, HTMLImageElement];
+export type ArrayType = 'shuffled' | 'sorted' | 'reversed';
+
+export function createRafs(container: HTMLElement, n: number, type: ArrayType, swapDelay: number): Raf[] {
     const numberList = [];
     const minSize = 32, maxSize = 96;
     const exponentBase = (maxSize / minSize) ** (1 / (n - 1));
@@ -38,7 +46,7 @@ export function createRafs(container, n, type, swapDelay) {
     const rafUrl = 'https://cdn.discordapp.com/avatars/218965601903706113/9a672cff7729f94a5ce72de35b143ed5.webp';
     let widthSoFar = 0, largest = 0;
 
-    const rafList = [];
+    const rafList: Raf[] = [];
 
     for (let i = 0; i < n; i += 1) {
         const img = new Image;
@@ -60,7 +68,7 @@ export function createRafs(container, n, type, swapDelay) {
     return rafList;
 }
 
-export async function runSort(rafList, swapDelay, compareDelay, extraDelay, keepGoing) {
+export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: number, extraDelay: number, keepGoing: Ref<boolean>) {
     await bubbleSort(rafList.length, async (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
