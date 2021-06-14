@@ -33,3 +33,18 @@ main {
 #rafs-wrapper {
     flex: 1 1 100%;
 }
+
+@media screen and (prefers-color-scheme: dark) {
+    body {
+        background-color: #202020;
+        color: white;
+    }
+
+    a {
+        color: #80c0ff;
+    }
+
+    a:visited {
+        color: hsl(271, 68%, 75%);
+    }
+}
