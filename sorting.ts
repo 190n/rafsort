@@ -4,17 +4,17 @@ function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
 
-type CompareFunction = (i: number, j: number) => Promise<number>;
-type SwapFunction = (i: number, j: number) => Promise<void>;
+type CompareFunction = (i: number, j: number) => number;
+type SwapFunction = (i: number, j: number) => void;
 
-async function bubbleSort(length: number, compare: CompareFunction, swap: SwapFunction) {
+function bubbleSort(length: number, compare: CompareFunction, swap: SwapFunction) {
     let didSwap = true;
     while (didSwap) {
         didSwap = false;
 
         for (let i = 1; i < length; i += 1) {
-            if (await compare(i, i - 1) < 0) {
-                await swap(i, i - 1);
+            if (compare(i, i - 1) < 0) {
+                swap(i, i - 1);
                 didSwap = true;
             }
         }
@@ -69,7 +69,7 @@ export function createRafs(container: HTMLElement, n: number, type: ArrayType, s
 }
 
 export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: number, extraDelay: number, keepGoing: Ref<boolean>) {
-    await bubbleSort(rafList.length, async (i, j) => {
+    await bubbleSort(rafList.length, (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
         }
@@ -77,12 +77,12 @@ export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: n
         console.log(`cmp ${i}, ${j}`);
         rafList[i][1].classList.add('comparing');
         rafList[j][1].classList.add('comparing');
-        await delay(compareDelay);
+        // await delay(compareDelay);
         rafList[i][1].classList.remove('comparing');
         rafList[j][1].classList.remove('comparing');
-        await delay(extraDelay);
+        // await delay(extraDelay);
         return rafList[i][0] - rafList[j][0];
-    }, async (i, j) => {
+    }, (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
         }
@@ -95,6 +95,6 @@ export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: n
         pixels += rafList[higher][1].width;
         rafList[lower][1].style.left = `${pixels}px`;
         [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
-        await delay(swapDelay + extraDelay);
+        // await delay(swapDelay + extraDelay);
     });
 }
