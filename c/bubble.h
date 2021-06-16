@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void bubble_sort(uint32_t *A, uint32_t n);
+void bubble_sort(uint32_t n);
 
 #endif

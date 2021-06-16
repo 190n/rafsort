@@ -138,3 +138,7 @@ export default function Controls() {
 }
 
 render(<Controls />, document.body);
+
+
+import { loadModule } from './wasm-sorts';
+loadModule();
