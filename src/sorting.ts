@@ -1,11 +1,13 @@
 import type { Ref } from 'preact/hooks';
 
+import { wasmBubble } from './wasm-sorts';
+
 function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
 
-type CompareFunction = (i: number, j: number) => number;
-type SwapFunction = (i: number, j: number) => void;
+export type CompareFunction = (i: number, j: number) => number;
+export type SwapFunction = (i: number, j: number) => void;
 
 function bubbleSort(length: number, compare: CompareFunction, swap: SwapFunction) {
     let didSwap = true;
@@ -69,7 +71,7 @@ export function createRafs(container: HTMLElement, n: number, type: ArrayType, s
 }
 
 export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: number, extraDelay: number, keepGoing: Ref<boolean>) {
-    await bubbleSort(rafList.length, (i, j) => {
+    await wasmBubble(rafList.length, (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
         }
