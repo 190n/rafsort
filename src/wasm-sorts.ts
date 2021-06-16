@@ -4,5 +4,5 @@ export async function wasmBubble(length: number, compare: CompareFunction, swap:
     const { instance } = await WebAssembly.instantiateStreaming(fetch('/sorts.wasm'), {
         env: { compare, swap },
     });
-    instance.exports.bubble_sort(length);
+    instance.exports.shell_sort(length);
 }

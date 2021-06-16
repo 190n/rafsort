@@ -95,8 +95,22 @@ export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: n
         rafList[higher][1].style.left = rafList[lower][1].style.left;
         let pixels = parseInt(rafList[lower][1].style.left.slice(0, -2));
         pixels += rafList[higher][1].width;
+        for (let i = lower + 1; i < higher; i += 1) {
+            pixels += rafList[i][1].width;
+        }
         rafList[lower][1].style.left = `${pixels}px`;
+
+        // move items in the middle
+        const offset = rafList[higher][1].width - rafList[lower][1].width;
+        for (let i = lower + 1; i < higher; i += 1) {
+            let left = parseInt(rafList[i][1].style.left.slice(0, -2));
+            left += offset;
+            rafList[i][1].style.left = `${left}px`;
+        }
+
         [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
         // await delay(swapDelay + extraDelay);
     });
+
+    console.log(rafList.map(r => r[0]));
 }
