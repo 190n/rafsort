@@ -1,12 +1,25 @@
 import { h, render } from 'preact';
 import { useState, useRef, useEffect } from 'preact/hooks';
 
-import { createRafs, runSort, Raf, ArrayType } from './sorting';
+import { createRafs, runSort, Raf, ArrayType, SortFunction } from './sorting';
+
+import { bubbleSort } from './js-sorts';
+import { wasmBubbleSort, wasmQuickSortQueue, wasmQuickSortStack, wasmShellSort } from './wasm-sorts';
 
 const arrayTypes: Record<ArrayType, string> = {
     shuffled: 'Shuffled',
     sorted: 'Sorted',
     reversed: 'Reverse order',
+};
+
+type SortFunctionName = 'bubble' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell';
+
+const sortFunctions: Record<SortFunctionName, [string, SortFunction]> = {
+    bubble: ['Bubble sort (JS)', bubbleSort],
+    wasmBubble: ['Bubble sort (C/WASM)', wasmBubbleSort],
+    wasmQuickQueue: ['Quicksort (C/WASM, with queue)', wasmQuickSortQueue],
+    wasmQuickStack: ['Quicksort (C/WASM, with stack)', wasmQuickSortStack],
+    wasmShell: ['Shell sort (C/WASM)', wasmShellSort],
 };
 
 export default function Controls() {
@@ -16,6 +29,8 @@ export default function Controls() {
     const [swapDelay, setSwapDelay] = useState(100);
     const [compareDelay, setCompareDelay] = useState(250);
     const [extraDelay, setExtraDelay] = useState(0);
+
+    const [sortFunction, setSortFunction] = useState<SortFunctionName>('bubble');
 
     const [rafList, setRafList] = useState<Raf[] | null>(null);
 
@@ -44,7 +59,7 @@ export default function Controls() {
         } else {
             runningRef.current = true;
             keepGoingRef.current = true;
-            await runSort(rafList, swapDelay, compareDelay, extraDelay, keepGoingRef);
+            await runSort(sortFunctions[sortFunction][1], rafList, swapDelay, compareDelay, extraDelay, keepGoingRef);
             runningRef.current = false;
         }
     }
@@ -70,7 +85,7 @@ export default function Controls() {
                     </label>
                     <label htmlFor="array-type">
                         Array type:
-                        <select onChange={e => setArrayType(e.currentTarget.value as ArrayType)}>
+                        <select onChange={e => setArrayType(e.currentTarget.value as ArrayType)} id="array-type">
                             {Object.keys(arrayTypes).map(t => (
                                 <option value={t} selected={t == arrayType}>{arrayTypes[t as ArrayType]}</option>
                             ))}
@@ -116,11 +131,14 @@ export default function Controls() {
                     </label>
                 </p>
                 <p>
-                    Sorting algorithm:
-                    <select>
-                        <option>Bubble sort</option>
-                        <option>sike you thought!</option>
-                    </select>
+                    <label htmlFor="sorting-algorithm">
+                        Sorting algorithm:
+                        <select onChange={e => setSortFunction(e.currentTarget.value as SortFunctionName)} id="sorting-algorithm">
+                            {Object.keys(sortFunctions).map(t => (
+                                <option value={t} selected={t == sortFunction}>{sortFunctions[t as SortFunctionName][0]}</option>
+                            ))}
+                        </select>
+                    </label>
                 </p>
                 <p>
                     <button id="create" onClick={onCreate}>Create Rafs</button>

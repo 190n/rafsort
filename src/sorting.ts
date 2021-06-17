@@ -1,29 +1,12 @@
 import type { Ref } from 'preact/hooks';
 
-import { wasmBubble } from './wasm-sorts';
-
 function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
 
 export type CompareFunction = (i: number, j: number) => number;
 export type SwapFunction = (i: number, j: number) => void;
-
-function bubbleSort(length: number, compare: CompareFunction, swap: SwapFunction) {
-    let didSwap = true;
-    while (didSwap) {
-        didSwap = false;
-
-        for (let i = 1; i < length; i += 1) {
-            if (compare(i, i - 1) < 0) {
-                swap(i, i - 1);
-                didSwap = true;
-            }
-        }
-
-        length -= 1;
-    }
-}
+export type SortFunction = (length: number, compare: CompareFunction, swap: SwapFunction) => void;
 
 export type Raf = [number, HTMLImageElement];
 export type ArrayType = 'shuffled' | 'sorted' | 'reversed';
@@ -70,8 +53,15 @@ export function createRafs(container: HTMLElement, n: number, type: ArrayType, s
     return rafList;
 }
 
-export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: number, extraDelay: number, keepGoing: Ref<boolean>) {
-    await wasmBubble(rafList.length, (i, j) => {
+export async function runSort(
+    sorter: SortFunction,
+    rafList: Raf[],
+    swapDelay: number,
+    compareDelay: number,
+    extraDelay: number,
+    keepGoing: Ref<boolean>
+) {
+    await sorter(rafList.length, (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
         }
@@ -113,4 +103,7 @@ export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: n
     });
 
     console.log(rafList.map(r => r[0]));
+    if (rafList.some(([n], i) => i != 0 && n < rafList[i - 1][0])) {
+        console.log('final array not sorted!!');
+    }
 }

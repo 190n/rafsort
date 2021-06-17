@@ -17,6 +17,11 @@ int64_t partition(int64_t lo, int64_t hi) {
 
         if (i < j) {
             swap(i, j);
+            if (pivot_index == i) {
+                pivot_index = j;
+            } else if (pivot_index == j) {
+                pivot_index = i;
+            }
         }
     }
 
