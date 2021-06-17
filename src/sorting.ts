@@ -45,7 +45,7 @@ export function createRafs(container: HTMLElement, n: number, type: ArrayType, s
         }
     }
 
-    const rafUrl = 'https://cdn.discordapp.com/avatars/218965601903706113/9a672cff7729f94a5ce72de35b143ed5.webp';
+    const rafUrl = '/raf.webp';
     let widthSoFar = 0, largest = 0;
 
     const rafList: Raf[] = [];
@@ -76,7 +76,7 @@ export async function runSort(rafList: Raf[], swapDelay: number, compareDelay: n
             throw 'stopped';
         }
 
-        console.log(`cmp ${i}, ${j}`);
+        console.log(`cmp ${i}, ${j}; A[${j}] = ${rafList[j][0]}`);
         rafList[i][1].classList.add('comparing');
         rafList[j][1].classList.add('comparing');
         // await delay(compareDelay);
