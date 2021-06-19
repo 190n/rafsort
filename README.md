@@ -26,6 +26,8 @@ Open `http://localhost:8081` in a browser to view it.
 
 Why does it run on ports 8080 and 8081? Port 8080 is the Snowpack development server. Unfortunately, it does not allow you to set custom response headers ([yet!](https://github.com/snowpackjs/snowpack/pull/3413)), so `yarn start` also starts a tiny Node.js proxy server on port 8081 which adds two headers that are required for `SharedArrayBuffer` to work.
 
+To create a production build, run `yarn build`. All files will be saved in the `build` directory.
+
 ### C compilation
 
 If you want to change or recompile the C source files, you need:
