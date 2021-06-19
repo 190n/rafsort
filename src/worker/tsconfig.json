@@ -1,0 +1,9 @@
+// this only applies to worker.ts
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["WebWorker"],
+    },
+    "exclude": ["../src/*.ts"],
+    "include": ["./*"],
+}

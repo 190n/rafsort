@@ -1,7 +1,7 @@
 // https://github.com/snowpackjs/snowpack/pull/3154
 // version 3.0.0 of @snowpack/plugin-webpack should make workers easier
 
-import type { WhichSort } from './wasm-sorts';
+import type { WhichSort } from '../wasm-sorts';
 
 interface Exports {
     bubble_sort: (length: number) => void;
@@ -26,15 +26,15 @@ self.onmessage = async ({ data: { module, which, length } }: MessageEvent<InitMe
         console.log('compare() called');
         arr[0] = 2;
 
-        self.onmessage = (e: MessageEvent<number>) => {
-            console.log('got comparison response');
-            Atomics.store(arr, 0, e.data);
-            Atomics.notify(arr, 0);
-        };
+        // self.onmessage = (e: MessageEvent<number>) => {
+        //     console.log('got comparison response');
+        //     // Atomics.store(arr, 0, e.data);
+        //     // Atomics.notify(arr, 0);
+        // };
 
         postMessage({ type: 'compare', i, j });
         console.log('sent comparison request');
-        Atomics.wait(arr, 0, 2);
+        // Atomics.wait(arr, 0, 2);
         console.log('stopped waiting');
 
         const result = arr[0];
@@ -46,6 +46,7 @@ self.onmessage = async ({ data: { module, which, length } }: MessageEvent<InitMe
         arr[0] = 0;
 
         self.onmessage = () => {
+            console.log('swap onmessage called');
             Atomics.store(arr, 0, 1);
             Atomics.notify(arr, 0);
         };
