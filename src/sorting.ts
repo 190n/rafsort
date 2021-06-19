@@ -4,8 +4,8 @@ function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
 
-export type CompareFunction = (i: number, j: number) => number;
-export type SwapFunction = (i: number, j: number) => void;
+export type CompareFunction = (i: number, j: number) => Promise<-1 | 0 | 1>;
+export type SwapFunction = (i: number, j: number) => Promise<void>;
 export type SortFunction = (length: number, compare: CompareFunction, swap: SwapFunction) => void;
 
 export type Raf = [number, HTMLImageElement];
@@ -61,7 +61,7 @@ export async function runSort(
     extraDelay: number,
     keepGoing: Ref<boolean>
 ) {
-    await sorter(rafList.length, (i, j) => {
+    await sorter(rafList.length, async (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
         }
@@ -69,12 +69,13 @@ export async function runSort(
         console.log(`cmp ${i}, ${j}; A[${j}] = ${rafList[j][0]}`);
         rafList[i][1].classList.add('comparing');
         rafList[j][1].classList.add('comparing');
-        // await delay(compareDelay);
+        await delay(compareDelay);
         rafList[i][1].classList.remove('comparing');
         rafList[j][1].classList.remove('comparing');
-        // await delay(extraDelay);
-        return rafList[i][0] - rafList[j][0];
-    }, (i, j) => {
+        await delay(extraDelay);
+
+        return Math.min(Math.max(-1, rafList[i][0] - rafList[j][0]), 1) as -1 | 0 | 1;
+    }, async (i, j) => {
         if (!keepGoing.current) {
             throw 'stopped';
         }
@@ -99,7 +100,7 @@ export async function runSort(
         }
 
         [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
-        // await delay(swapDelay + extraDelay);
+        await delay(swapDelay + extraDelay);
     });
 
     console.log(rafList.map(r => r[0]));

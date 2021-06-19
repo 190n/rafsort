@@ -2,37 +2,47 @@ import type { CompareFunction, SwapFunction } from './sorting';
 
 let wasmModule: WebAssembly.Module | null = null;
 
-interface Exports {
-    bubble_sort: (length: number) => void;
-    quick_sort_queue: (length: number) => void;
-    quick_sort_stack: (length: number) => void;
-    shell_sort: (length: number) => void;
-    memory: WebAssembly.Memory;
-}
+type RequestMessage = {
+    type: 'compare' | 'swap',
+    i: number,
+    j: number,
+} | {
+    type: 'done',
+};
 
-type WhichSort = 'bubble_sort' | 'quick_sort_queue' | 'quick_sort_stack' | 'shell_sort';
+export type WhichSort = 'bubble_sort' | 'quick_sort_queue' | 'quick_sort_stack' | 'shell_sort';
 
-async function wasmSort(which: WhichSort, length: number, compare: CompareFunction, swap: SwapFunction): Promise<void> {
-    if (!wasmModule) {
-        wasmModule = await WebAssembly.compileStreaming(fetch('/sorts.wasm'));
-    }
-
-    const { exports } = await WebAssembly.instantiate(wasmModule, {
-        env: {
-            compare,
-            swap,
-            print(str: number) {
-                const array = new Uint8Array(exports.memory.buffer, str, 256);
-                const string = new TextDecoder('utf8').decode(array);
-                console.log(string.split('\0')[0]);
-            },
-            print_number(n: number) {
-                console.log(n.toString());
+function wasmSort(which: WhichSort, length: number, compare: CompareFunction, swap: SwapFunction): Promise<void> {
+    return new Promise(resolve => {
+        (async () => {
+            if (!wasmModule) {
+                wasmModule = await WebAssembly.compileStreaming(fetch('/sorts.wasm'));
             }
-        },
-    }) as { exports: unknown } as { exports: Exports };
+        })().then(() => {
+            const worker = new Worker('/dist/worker.js');
+            worker.onmessage = async ({ data }: MessageEvent<RequestMessage>) => {
+                switch (data.type) {
+                case 'compare':
+                    const result = await compare(data.i, data.j);
+                    console.log('about to send comparison result');
+                    worker.postMessage(result);
+                    console.log('sent comparison result');
+                    break;
+                case 'swap':
+                    await swap(data.i, data.j);
+                    // content of this message doesn't matter
+                    worker.postMessage(0);
+                    break;
+                case 'done':
+                    worker.terminate();
+                    resolve();
+                    break;
+                }
+            };
 
-    exports[which](length);
+            worker.postMessage({ module: wasmModule, which, length });
+        });
+    });
 }
 
 export const wasmBubbleSort = wasmSort.bind(null, 'bubble_sort');
