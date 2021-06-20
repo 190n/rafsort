@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 void *malloc(unsigned long size);
-void *calloc(unsigned long n, unsigned long size);
 void free(void *ptr);
 
 #endif

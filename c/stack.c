@@ -15,7 +15,7 @@ Stack *stack_create(uint32_t capacity) {
     if (s) {
         s->top = 0;
         s->capacity = capacity;
-        s->items = (int64_t *) calloc(capacity, sizeof(int64_t));
+        s->items = (int64_t *) malloc(capacity * sizeof(int64_t));
         if (!s->items) {
             free(s);
             s = NULL;

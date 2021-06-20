@@ -21,7 +21,7 @@ Queue *queue_create(uint32_t capacity) {
         q->size = 0;
         q->capacity = capacity;
 
-        q->items = (int64_t *) calloc(capacity, sizeof(int64_t));
+        q->items = (int64_t *) malloc(capacity * sizeof(int64_t));
         if (!q->items) {
             // failure. try to free the memory we allocated for the queue.
             free(q);
