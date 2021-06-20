@@ -15,3 +15,27 @@ export async function bubbleSort(length: number, compare: CompareFunction, swap:
         length -= 1;
     }
 }
+
+export async function bogoSort(length: number, compare: CompareFunction, swap: SwapFunction): Promise<void> {
+    while (true) {
+        let sorted = true;
+
+        for (let i = 1; i < length && sorted; i += 1) {
+            if (await compare(i - 1, i) > 0) {
+                sorted = false;
+            }
+        }
+
+        if (sorted) {
+            return;
+        }
+
+        // https://stackoverflow.com/a/6274381
+        for (let i = length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            if (i != j) {
+                await swap(i, j);
+            }
+        }
+    }
+}
