@@ -15,46 +15,32 @@ interface InitMessage {
     module: WebAssembly.Module;
     which: WhichSort;
     length: number;
+    array: Int32Array;
 }
 
-const buf = new SharedArrayBuffer(4),
-    arr = new Int32Array(buf);
-
-self.onmessage = async ({ data: { module, which, length } }: MessageEvent<InitMessage>) => {
+self.onmessage = async ({ data: { module, which, length, array } }: MessageEvent<InitMessage>) => {
     console.log('in worker onmessage');
     function compare(i: number, j: number): number {
         console.log('compare() called');
-        arr[0] = 2;
-
-        // self.onmessage = (e: MessageEvent<number>) => {
-        //     console.log('got comparison response');
-        //     // Atomics.store(arr, 0, e.data);
-        //     // Atomics.notify(arr, 0);
-        // };
+        array[0] = 2;
 
         postMessage({ type: 'compare', i, j });
         console.log('sent comparison request');
-        // Atomics.wait(arr, 0, 2);
+        Atomics.wait(array, 0, 2);
         console.log('stopped waiting');
 
-        const result = arr[0];
-        arr[0] = 2;
+        const result = array[0];
+        array[0] = 2;
         return result;
     }
 
     function swap(i: number, j: number) {
-        arr[0] = 0;
-
-        self.onmessage = () => {
-            console.log('swap onmessage called');
-            Atomics.store(arr, 0, 1);
-            Atomics.notify(arr, 0);
-        };
+        array[0] = 0;
 
         postMessage({ type: 'swap', i, j });
-        Atomics.wait(arr, 0, 0);
+        Atomics.wait(array, 0, 0);
 
-        arr[0] = 0;
+        array[0] = 0;
     }
 
     const { exports } = await WebAssembly.instantiate(module, {
@@ -74,13 +60,18 @@ self.onmessage = async ({ data: { module, which, length } }: MessageEvent<InitMe
 
     exports[which](length);
     postMessage({ type: 'done' });
+    console.log('onmessage exited');
 };
 
-// worker gets message with wasm module, which sort, and length
-// worker launches wasm function
+// parent worker gets message with wasm module, which sort, and length
+// parent worker forwards that to child
+// child worker launches wasm function
 // when wasm wants to compare or swap:
-//     worker posts message with the indices
-//     worker blocks until...
-//     host posts message with the result (compare) or just indicating that it's done (swap)
+//     child worker posts message with the indices
+//     child worker calls Atomics.wait
+//     parent worker receives indices
+//     parent worker forwards them to main thread
+//     main thread runs animation, sends result to parent worker
+//     parent worker calls Atomics.notify
 // wasm function returns
 // worker posts message indicating that it's done
