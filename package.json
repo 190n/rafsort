@@ -7,7 +7,7 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "start": "(snowpack dev &); node server.js",
+        "start": "(snowpack dev &); sleep 3; node server.js",
         "build": "snowpack build"
     },
     "devDependencies": {
