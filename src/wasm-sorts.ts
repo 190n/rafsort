@@ -38,7 +38,7 @@ function wasmSort(which: WhichSort, length: number, compare: CompareFunction, sw
                     Atomics.notify(array, 0);
                     break;
                 case 'done':
-                    // worker.terminate();
+                    worker.terminate();
                     resolve();
                     break;
                 }
