@@ -33,9 +33,7 @@ export async function bogoSort(length: number, compare: CompareFunction, swap: S
         // https://stackoverflow.com/a/6274381
         for (let i = length - 1; i > 0; i -= 1) {
             const j = Math.floor(Math.random() * (i + 1));
-            if (i != j) {
-                await swap(i, j);
-            }
+            await swap(i, j);
         }
     }
 }

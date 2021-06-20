@@ -5,11 +5,15 @@
 .raf {
     position: absolute;
     bottom: 0;
-    transition: 0s left;
+    transform: scale(100%);
 }
 
 .raf.comparing {
     filter: brightness(175%);
+}
+
+.raf.self-swapping {
+    transform: scale(90%);
 }
 
 html {

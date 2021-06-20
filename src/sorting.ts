@@ -40,7 +40,7 @@ export function createRafs(container: HTMLElement, n: number, type: ArrayType, s
         img.width = img.height = size;
         img.classList.add('raf');
         img.style.left = `${widthSoFar}px`;
-        img.style.transitionDuration = `${swapDelay}ms`;
+        img.style.transition = `left ${swapDelay}ms, transform ${swapDelay / 2}ms`;
         widthSoFar += size;
         container.appendChild(img);
         if (size > largest) {
@@ -81,26 +81,34 @@ export async function runSort(
         }
 
         console.log(`swp ${i}, ${j}`);
-        // move around
-        const lower = Math.min(i, j), higher = Math.max(i, j);
-        rafList[higher][1].style.left = rafList[lower][1].style.left;
-        let pixels = parseInt(rafList[lower][1].style.left.slice(0, -2));
-        pixels += rafList[higher][1].width;
-        for (let i = lower + 1; i < higher; i += 1) {
-            pixels += rafList[i][1].width;
-        }
-        rafList[lower][1].style.left = `${pixels}px`;
 
-        // move items in the middle
-        const offset = rafList[higher][1].width - rafList[lower][1].width;
-        for (let i = lower + 1; i < higher; i += 1) {
-            let left = parseInt(rafList[i][1].style.left.slice(0, -2));
-            left += offset;
-            rafList[i][1].style.left = `${left}px`;
-        }
+        if (i == j) {
+            rafList[i][1].classList.add('self-swapping');
+            await delay(swapDelay / 2);
+            rafList[i][1].classList.remove('self-swapping');
+            await delay(swapDelay / 2 + extraDelay);
+        } else {
+            // move around
+            const lower = Math.min(i, j), higher = Math.max(i, j);
+            rafList[higher][1].style.left = rafList[lower][1].style.left;
+            let pixels = parseInt(rafList[lower][1].style.left.slice(0, -2));
+            pixels += rafList[higher][1].width;
+            for (let i = lower + 1; i < higher; i += 1) {
+                pixels += rafList[i][1].width;
+            }
+            rafList[lower][1].style.left = `${pixels}px`;
 
-        [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
-        await delay(swapDelay + extraDelay);
+            // move items in the middle
+            const offset = rafList[higher][1].width - rafList[lower][1].width;
+            for (let i = lower + 1; i < higher; i += 1) {
+                let left = parseInt(rafList[i][1].style.left.slice(0, -2));
+                left += offset;
+                rafList[i][1].style.left = `${left}px`;
+            }
+
+            [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
+            await delay(swapDelay + extraDelay);
+        }
     });
 
     console.log(rafList.map(r => r[0]));
