@@ -6,7 +6,7 @@ function delay(ms: number): Promise<void> {
 
 export type CompareFunction = (i: number, j: number) => Promise<-1 | 0 | 1>;
 export type SwapFunction = (i: number, j: number) => Promise<void>;
-export type SortFunction = (length: number, compare: CompareFunction, swap: SwapFunction) => void;
+export type SortFunction = (length: number, compare: CompareFunction, swap: SwapFunction, array: number[]) => void;
 
 export type Raf = [number, HTMLImageElement];
 export type ArrayType = 'shuffled' | 'sorted' | 'reversed';
@@ -109,7 +109,7 @@ export async function runSort(
             [rafList[lower], rafList[higher]] = [rafList[higher], rafList[lower]];
             await delay(swapDelay + extraDelay);
         }
-    });
+    }, rafList.map(r => r[0]));
 
     console.log(rafList.map(r => r[0]));
     if (rafList.some(([n], i) => i != 0 && n < rafList[i - 1][0])) {

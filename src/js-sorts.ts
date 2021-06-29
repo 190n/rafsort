@@ -37,3 +37,34 @@ export async function bogoSort(length: number, compare: CompareFunction, swap: S
         }
     }
 }
+
+export async function sussort(length: number, compare: CompareFunction, swap: SwapFunction, array: number[]): Promise<void> {
+    // pretend to check if it's sorted like bogosort does
+    let sorted = true;
+
+    for (let i = 1; i < length && sorted; i += 1) {
+        if (await compare(i - 1, i) > 0) {
+            sorted = false;
+        }
+    }
+
+    if (sorted) {
+        return;
+    }
+
+    const sortedArray = [];
+    for (let i = 0; i < length; i++) {
+        sortedArray.push(i);
+    }
+
+    const swapList: Array<[number, number]> = [];
+    for (let i = 0; i < length; i++) {
+        const i1 = sortedArray.indexOf(i), i2 = array.indexOf(i);
+        swapList.unshift([i1, i2]);
+        [sortedArray[i1], sortedArray[i2]] = [sortedArray[i2], sortedArray[i1]];
+    }
+
+    for (const [i, j] of swapList) {
+        await swap(i, j);
+    }
+}

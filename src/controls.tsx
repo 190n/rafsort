@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 
 import { createRafs, runSort, Raf, ArrayType, SortFunction } from './sorting';
 
-import { bubbleSort, bogoSort } from './js-sorts';
+import { bubbleSort, bogoSort, sussort } from './js-sorts';
 import { wasmBubbleSort, wasmQuickSortQueue, wasmQuickSortStack, wasmShellSort } from './wasm-sorts';
 
 const arrayTypes: Record<ArrayType, string> = {
@@ -12,11 +12,12 @@ const arrayTypes: Record<ArrayType, string> = {
     reversed: 'Reverse order',
 };
 
-type SortFunctionName = 'bubble' | 'bogo' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell';
+type SortFunctionName = 'bubble' | 'bogo' | 'sus' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell';
 
 const sortFunctions: Record<SortFunctionName, [string, SortFunction]> = {
     bubble: ['Bubble sort (JS)', bubbleSort],
     bogo: ['Bogosort (JS)', bogoSort],
+    sus: ['Sussort (JS)', sussort],
     wasmBubble: ['Bubble sort (C/WASM)', wasmBubbleSort],
     wasmQuickQueue: ['Quicksort (C/WASM, with queue)', wasmQuickSortQueue],
     wasmQuickStack: ['Quicksort (C/WASM, with stack)', wasmQuickSortStack],
