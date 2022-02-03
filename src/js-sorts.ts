@@ -68,3 +68,15 @@ export async function sussort(length: number, compare: CompareFunction, swap: Sw
         await swap(i, j);
     }
 }
+
+export async function selectionSort(length: number, compare: CompareFunction, swap: SwapFunction, array: number[]): Promise<void> {
+    for (let i = 0; i < length; i++) {
+        let iMin = i;
+        for (let j = i + 1; j < length; j++) {
+            if (await compare(j, iMin) < 0) {
+                iMin = j;
+            }
+        }
+        await swap(i, iMin);
+    }
+}
