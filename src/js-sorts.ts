@@ -80,3 +80,16 @@ export async function selectionSort(length: number, compare: CompareFunction, sw
         await swap(i, iMin);
     }
 }
+
+export async function insertionSort(length: number, compare: CompareFunction, swap: SwapFunction): Promise<void> {
+    // adapted from wikipedia: https://en.wikipedia.org/wiki/Insertion_sort
+    let i = 1;
+    while (i < length) {
+        let j = i;
+        while (j > 0 && await compare(j - 1, j) > 0) {
+            await swap(j, j - 1);
+            j -= 1;
+        }
+        i++;
+    }
+}

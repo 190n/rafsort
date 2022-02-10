@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 
 import { createRafs, runSort, Raf, ArrayType, SortFunction } from './sorting';
 
-import { bubbleSort, bogoSort, sussort, selectionSort } from './js-sorts';
+import { bubbleSort, bogoSort, sussort, selectionSort, insertionSort } from './js-sorts';
 import { wasmBubbleSort, wasmQuickSortQueue, wasmQuickSortStack, wasmShellSort } from './wasm-sorts';
 
 const arrayTypes: Record<ArrayType, string> = {
@@ -12,7 +12,7 @@ const arrayTypes: Record<ArrayType, string> = {
     reversed: 'Reverse order',
 };
 
-type SortFunctionName = 'bubble' | 'bogo' | 'sus' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell' | 'selection';
+type SortFunctionName = 'bubble' | 'bogo' | 'sus' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell' | 'selection' | 'insertion';
 
 const sortFunctions: Record<SortFunctionName, [string, SortFunction]> = {
     bubble: ['Bubble sort (JS)', bubbleSort],
@@ -23,6 +23,7 @@ const sortFunctions: Record<SortFunctionName, [string, SortFunction]> = {
     wasmQuickStack: ['Quicksort (C/WASM, with stack)', wasmQuickSortStack],
     wasmShell: ['Shell sort (C/WASM)', wasmShellSort],
     selection: ['Selection sort (JS)', selectionSort],
+    insertion: ['Insertion sort (JS)', insertionSort],
 };
 
 export default function Controls() {
