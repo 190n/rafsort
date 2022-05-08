@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 
 import { createRafs, runSort, Raf, ArrayType, SortFunction } from './sorting';
 
-import { bubbleSort, bogoSort, sussort, selectionSort, insertionSort } from './js-sorts';
+import { bubbleSort, bogoSort, sussort, selectionSort, insertionSort, iCantBelieveItCanSort } from './js-sorts';
 import { wasmBubbleSort, wasmQuickSortQueue, wasmQuickSortStack, wasmShellSort } from './wasm-sorts';
 
 const arrayTypes: Record<ArrayType, string> = {
@@ -12,7 +12,7 @@ const arrayTypes: Record<ArrayType, string> = {
     reversed: 'Reverse order',
 };
 
-type SortFunctionName = 'bubble' | 'bogo' | 'sus' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell' | 'selection' | 'insertion';
+type SortFunctionName = 'bubble' | 'bogo' | 'sus' | 'wasmBubble' | 'wasmQuickQueue' | 'wasmQuickStack' | 'wasmShell' | 'selection' | 'insertion' | 'icabics';
 
 const sortFunctions: Record<SortFunctionName, [string, SortFunction]> = {
     bubble: ['Bubble sort (JS)', bubbleSort],
@@ -24,6 +24,7 @@ const sortFunctions: Record<SortFunctionName, [string, SortFunction]> = {
     wasmShell: ['Shell sort (C/WASM)', wasmShellSort],
     selection: ['Selection sort (JS)', selectionSort],
     insertion: ['Insertion sort (JS)', insertionSort],
+    icabics: ['I can\'t believe it can sort (JS)', iCantBelieveItCanSort],
 };
 
 export default function Controls() {

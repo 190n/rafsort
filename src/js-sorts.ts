@@ -93,3 +93,13 @@ export async function insertionSort(length: number, compare: CompareFunction, sw
         i++;
     }
 }
+
+export async function iCantBelieveItCanSort(length: number, compare: CompareFunction, swap: SwapFunction): Promise<void> {
+    for (let i = 0; i < length; i++) {
+        for (let j = 0; j < length; j++) {
+            if (await compare(i, j) < 0) {
+                await swap(i, j);
+            }
+        }
+    }
+}
